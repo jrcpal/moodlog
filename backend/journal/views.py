@@ -1,8 +1,11 @@
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Tag, Entry
 from .serializers import TagSerializer, EntrySerializer
+from django.db.models import Avg, Count
+from django.db.models.functions import TruncDate
 
 class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
@@ -49,3 +52,73 @@ class EntryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class StatsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        entries = Entry.objects.filter(user=user)
+
+        # Basic totals
+        totals = entries.aggregate(
+            total_entries=Count("id"),
+            average_mood=Avg("mood"),
+        )
+
+        # Mood over time, grouped by day
+        mood_over_time = (
+            entries
+            .annotate(date=TruncDate("created_at"))
+            .values("date")
+            .annotate(average_mood=Avg("mood"), count=Count("id"))
+            .order_by("date")
+        )
+
+        # Tag frequency
+        tag_frequency = (
+            Tag.objects
+            .filter(user=user, is_archived=False)
+            .annotate(count=Count("entries"))
+            .filter(count__gt=0)
+            .order_by("-count")
+            .values("name", "count")
+        )
+
+        # Average mood per tag
+        mood_by_tag = (
+            Tag.objects
+            .filter(user=user, is_archived=False)
+            .annotate(
+                average_mood=Avg("entries__mood"),
+                count=Count("entries"),
+            )
+            .filter(count__gt=0)
+            .order_by("-count")
+            .values("name", "average_mood", "count")
+        )
+
+        return Response({
+            "total_entries": totals["total_entries"],
+            "average_mood": round(totals["average_mood"], 2) if totals["average_mood"] else None,
+            "mood_over_time": [
+                {
+                    "date": row["date"].isoformat() if row["date"] else None,
+                    "average_mood": round(row["average_mood"], 2),
+                    "count": row["count"],
+                }
+                for row in mood_over_time
+            ],
+            "tag_frequency": [
+                {"tag": row["name"], "count": row["count"]}
+                for row in tag_frequency
+            ],
+            "mood_by_tag": [
+                {
+                    "tag": row["name"],
+                    "average_mood": round(row["average_mood"], 2),
+                    "count": row["count"],
+                }
+                for row in mood_by_tag
+            ],
+        })
