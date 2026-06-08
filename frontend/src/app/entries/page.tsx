@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
     getEntries,
     createEntry,
@@ -107,9 +108,14 @@ export default function EntriesPage() {
         <main className="max-w-2xl mx-auto p-8">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">My entries</h1>
-                <button onClick={handleLogout} className="text-sm underline">
-                    Log out
-                </button>
+                <div className="flex gap-4 text-sm">
+                    <Link href="/stats" className="underline">
+                        Stats
+                    </Link>
+                    <button onClick={handleLogout} className="underline">
+                        Log out
+                    </button>
+                </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3 mb-8 border-b pb-6">
@@ -146,8 +152,8 @@ export default function EntriesPage() {
                                 <span
                                     key={tag.id}
                                     className={`group inline-flex items-center text-xs rounded border overflow-hidden ${selected
-                                            ? "bg-black text-white border-black"
-                                            : "bg-white text-gray-700 border-gray-300"
+                                        ? "bg-black text-white border-black"
+                                        : "bg-white text-gray-700 border-gray-300"
                                         }`}
                                 >
                                     <button
@@ -161,8 +167,8 @@ export default function EntriesPage() {
                                         type="button"
                                         onClick={() => handleDeleteTag(tag.id)}
                                         className={`px-1.5 py-1 border-l ${selected
-                                                ? "border-white/30 hover:bg-white/10"
-                                                : "border-gray-300 hover:bg-gray-100"
+                                            ? "border-white/30 hover:bg-white/10"
+                                            : "border-gray-300 hover:bg-gray-100"
                                             }`}
                                         title="Delete tag"
                                         aria-label={`Delete tag ${tag.name}`}
@@ -237,8 +243,8 @@ export default function EntriesPage() {
                                         <span
                                             key={tag.id}
                                             className={`text-xs px-2 py-0.5 rounded ${tag.is_archived
-                                                    ? "bg-gray-100 text-gray-400 italic"
-                                                    : "bg-gray-100 text-gray-700"
+                                                ? "bg-gray-100 text-gray-400 italic"
+                                                : "bg-gray-100 text-gray-700"
                                                 }`}
                                             title={tag.is_archived ? "Archived tag" : undefined}
                                         >

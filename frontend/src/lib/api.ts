@@ -114,3 +114,33 @@ export async function deleteTag(id: number): Promise<void> {
         method: "DELETE"
     });
 }
+
+// Stats
+export interface MoodOverTimePoint {
+  date: string;
+  average_mood: number;
+  count: number;
+}
+
+export interface TagFrequencyPoint {
+  tag: string;
+  count: number;
+}
+
+export interface MoodByTagPoint {
+  tag: string;
+  average_mood: number;
+  count: number;
+}
+
+export interface Stats {
+  total_entries: number;
+  average_mood: number | null;
+  mood_over_time: MoodOverTimePoint[];
+  tag_frequency: TagFrequencyPoint[];
+  mood_by_tag: MoodByTagPoint[];
+}
+
+export async function getStats(): Promise<Stats> {
+  return request<Stats>("/stats/");
+}
