@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: django-tests
+        name: Run Django tests
+        entry: backend/venv/bin/python backend/manage.py test journal --verbosity=1
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
