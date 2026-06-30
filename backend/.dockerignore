@@ -1,0 +1,29 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment (NEVER copy this in - it's host-specific)
+venv/
+.venv/
+
+# Environment files (secrets!)
+.env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
