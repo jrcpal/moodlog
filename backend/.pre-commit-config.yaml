@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: django-tests
         name: Run Django tests
-        entry: backend/venv/bin/python backend/manage.py test journal --verbosity=1
+        entry: backend/venv/bin/python backend/manage.py test journal --verbosity=1 --settings=moodlog.settings_test
         language: system
         pass_filenames: false
         always_run: true
