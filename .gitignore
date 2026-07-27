@@ -27,6 +27,16 @@ frontend/.env*
 # Claude Code
 .claude/
 
+# Local Terraform state
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+
+# Sensitive variables
+*.tfvars
+!example.tfvars
+
 # misc
 .DS_Store
 *.pem
