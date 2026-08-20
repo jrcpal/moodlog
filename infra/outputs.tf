@@ -17,3 +17,17 @@ output "rds_security_group_id" {
 output "db_subnet_group_name" {
   value = aws_db_subnet_group.main.name
 }
+
+output "db_endpoint" {
+  description = "Hostname:port of the RDS instance"
+  value       = aws_db_instance.main.endpoint
+}
+
+output "db_address" {
+  description = "Hostname of the RDS instance"
+  value       = aws_db_instance.main.address
+}
+
+output "db_port" {
+  value = aws_db_instance.main.port
+}
